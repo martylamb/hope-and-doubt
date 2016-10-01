@@ -2,19 +2,23 @@ package com.martiansoftware.validation;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  *
  * @author mlamb
  */
-public class HopeTest {
+public class HopeTest extends HopeDoubtTester {
+
+    @Before
+    public void setupExceptionClass() {
+        _setExceptionClass(UncheckedValidationException.class);
+    }
     
-    @Test
-    public void testGoodHopes() {
-        assertEquals("x", Hope.that("x").isNotNullOrEmpty().value());
+    @Override
+    protected Hope v(Object o) {
+        return Hope.that(o);
     }
- 
-    public void testLongMap() {
-        assertEquals((Long) 12l, Hope.that(12).named("twelve").map(Long::valueOf).value());
-    }
+    
 }
