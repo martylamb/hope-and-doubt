@@ -14,7 +14,7 @@ public class HopeTest {
         assertEquals("x", Hope.that("x").isNotNullOrEmpty().value());
     }
  
-    public void testIntMap() {
+    public void testLongMap() {
         assertEquals((Long) 12l, Hope.that(12).named("twelve").map(Long::valueOf).value());
     }
 }
