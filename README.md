@@ -13,6 +13,7 @@ quick examples
 ```java
 public void setName(String name) {
     String validatedName = Hope.that(name).isNotNullOrEmpty().value();
+    ...
 }
 ```
 
@@ -26,6 +27,7 @@ If `name` is an empty String, it will fail with
 ```java
 public void setName(String name) throws CheckedValidationException {
     String validatedName = Doubt.that(name).isNotNullOrEmpty().value();
+    ...
 }
 ```
 
@@ -39,6 +41,7 @@ If `name` is an empty String, it will fail with
 ```java
 public void setName(String name) {
     String validatedName = Hope.that(name).named("a person's name").isNotNullOrEmpty().value();
+    ...
 }
 ```
 
@@ -50,6 +53,7 @@ If `name` is null, this will fail with:
 ```java
 public void setName(String name) {
     String validatedName = Hope.that(name).orElse("Anonymous").isNotNullOrEmpty().value();
+    ...
 }
 ```
 
@@ -58,6 +62,7 @@ public void setName(String name) {
 public void setFoo(List<Foo> fooList, Bar[] barArray) {
     List<Foo> myFoos = Hope.that(fooList).isNotNullOrEmpty().value();
     Bar[] myBars = Hope.that(barArray).isNotNullOrEmpty().value();
+    ...
 }
 ```
 
@@ -68,6 +73,7 @@ public void setName(String name) {
                                .NotNullOrEmpty()
                                .isFalse(n -> n.equalsIgnoreCase("anonymous"))
                                .value();
+    ...
 }
 ```
 
@@ -79,6 +85,7 @@ public void setAge(Integer age) {
                                .isFalse(n -> n < 0,
                                        "negative ages are not allowed")
                                .value();
+    ...
 }
 ```
 
@@ -91,8 +98,18 @@ public void setName(String name) {
                                .matchesAny("^Mrs?\\. .*", // accepts "Mr. or "Mrs."
                                            "^Dr\\. .*")   // accepts "Dr."
                                .value();
+    ...
 }
 ```
+
+###Mapping inputs to different objects###
+```java
+public void setBaz(String baz) {
+    int i = Hope.that(baz).isNotNullOrEmpty().map(Integer::valueOf).value();
+    ...
+}
+```
+
 
 ###What else does it do?###
 
