@@ -89,7 +89,7 @@ public void setName(String name) {
                                .orElse("Mrs. Jane Doe")
                                .NotNullOrEmpty()
                                .matchesAny("^Mrs?\\. .*", // accepts "Mr. or "Mrs."
-                                           "^Dr\\. .*")    // accepts "Dr."
+                                           "^Dr\\. .*")   // accepts "Dr."
                                .value();
 }
 ```
