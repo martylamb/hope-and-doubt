@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.martiansoftware</groupId>
     <artifactId>hope-and-doubt</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>hope-and-doubt</name>
     <description>lightweight validation library</description>
     <url>https://github.com/martylamb/hope-and-doubt</url>
