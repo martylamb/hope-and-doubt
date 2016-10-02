@@ -208,7 +208,6 @@ abstract class HopeDoubtTester <E extends Exception> {
             v(nonNullObject).isNotNullOrEmpty();
             fail("Object (which has no isEmpty method) passed isNotNullOrEmpty test");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             checkEx(e);
             assertTrue(e.getMessage().contains("does not provide"));
         }
