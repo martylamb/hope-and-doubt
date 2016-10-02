@@ -150,14 +150,14 @@ public class Validator <T, E extends Exception> {
             oops = ((Object[]) _value).length == 0;
         } else {
             try {
-                Method m = _value.getClass().getMethod("isEmpty");
+                Method m = _value.getClass().getMethod("isEmpty"); // TODO also look for size() and length()
                 if (m.getReturnType().equals(Boolean.TYPE)) {
                     oops = (Boolean) m.invoke(_value);
-                } else throw new NoSuchMethodException("unexpected return type: " + m.getReturnType());
+                } else invalid("unexpected return type: %s", m.getReturnType()); // TODO ignore this
             } catch (NoSuchMethodException | IllegalAccessException e) {
-                throw new IllegalStateException(String.format("class %s does not provide an accessible boolean isEmpty() method", _value.getClass().getName()), e);
+                invalid("class %s does not provide an accessible boolean isEmpty() method", _value.getClass().getName());
             } catch (InvocationTargetException e) {
-                throw new IllegalStateException(String.format("unable to invoke %s.isEmpty()", _value.getClass().getName()), e);
+                invalid("unable to invoke %s.isEmpty()", _value.getClass().getName());
             }
         }
         if (oops) invalid("%s must not be empty", _name);
@@ -253,7 +253,7 @@ public class Validator <T, E extends Exception> {
      */
     public Validator <T, E> matchesAny(String... regexes) throws E {
         isNotNull();
-        if (regexes.length == 0) throw new IllegalArgumentException("no patterns supplied");
+        if (regexes.length == 0) invalid("no patterns supplied");
         String s = _value.toString();
         for (String regex : regexes) {
             if (s.matches(regex)) return this;
