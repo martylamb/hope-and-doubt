@@ -16,6 +16,7 @@ package com.martiansoftware.validation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -137,35 +138,90 @@ public class Validator <T, E extends Exception> {
     }    
     
     /**
+     * Helper for checking if objects are "empty", used to probe for multiple
+     * potential no-arg indicators of emptiness.
+     */
+    private class EmptinessCheck {
+        private final String _methodName;
+        private final Class _returnType;
+        private final Object _emptinessIndicator;
+        
+        private EmptinessCheck(String methodName, Class returnType, Object emptinessIndicator) {
+            _methodName = methodName;
+            _returnType = returnType;
+            _emptinessIndicator = emptinessIndicator;
+        }
+        
+        // tries to find and call the named method with the specified return type.
+        // if found and invoked, the return value is checked against the emptinessIndicator.
+        // if equal, then the value is considered "empty" and the exception is thrown.
+        // returns a boolean indicating whether the method was found and emptiness
+        // was checked.
+        public boolean invoke() throws E {
+            try {
+                Method m = _value.getClass().getMethod(_methodName);
+                if (m.getReturnType().equals(_returnType)) {
+                    Object ret = m.invoke(_value);
+                    if (_emptinessIndicator.equals(ret)) throwEmpty();
+                    return true; // found and invoked a tester so return true regardless of result
+                }
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException notAvailable) {}
+            return false;
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("%s %s()", _returnType.getName(), _methodName);
+        }
+    }
+    
+    private void throwEmpty() throws E {
+        invalid("%s must not be empty", _name);        
+    }
+    
+    /**
      * Validates that the value is not null or empty.  Emptiness
      * is determined as follows:
      * <ul>
      * <li>A zero-length array is empty.</li>
      * <li>If the object has a boolean isEmpty() method that returns true 
      * (e.g., a Collection or a String), it is empty.</li>
+     * <li>If the object has a boolean isPresent() method that returns true
+     * (e.g., an Optional), it is empty.</li>
+     * <li>If the object has an int size() or long size() method that returns 0,
+     * it is empty.</li>
+     * <li>If the object has an int length() or long length() method that returns 0,
+     * it is empty.</li>
      * <li>
      * </ul>
+     * 
+     * If more than one of the above method signatures is found, only the first
+     * one is invoked and its answer is considered authoritative with respect
+     * to "emptiness"
+     * 
      * @return this validator
      * @throws E if validation fails
      */
     public Validator <T, E> isNotNullOrEmpty() throws E  {
         isNotNull();
-        boolean oops = false;
         if (_value.getClass().isArray()) {
-            oops = ((Object[]) _value).length == 0;
+            if (((Object[]) _value).length == 0) throwEmpty();
         } else {
-            try {
-                Method m = _value.getClass().getMethod("isEmpty"); // TODO also look for size() and length()
-                if (m.getReturnType().equals(Boolean.TYPE)) {
-                    oops = (Boolean) m.invoke(_value);
-                } else invalid("unexpected return type: %s", m.getReturnType()); // TODO ignore this
-            } catch (NoSuchMethodException | IllegalAccessException e) {
-                invalid("class %s does not provide an accessible boolean isEmpty() method", _value.getClass().getName());
-            } catch (InvocationTargetException e) {
-                invalid("unable to invoke %s.isEmpty()", _value.getClass().getName());
+            List<EmptinessCheck> checks = new java.util.ArrayList<>(6);
+            checks.add(new EmptinessCheck("isEmpty", Boolean.TYPE, true));
+            checks.add(new EmptinessCheck("isPresent", Boolean.TYPE, true));
+            checks.add(new EmptinessCheck("size", Integer.TYPE, 0));
+            checks.add(new EmptinessCheck("size", Long.TYPE, 0l));
+            checks.add(new EmptinessCheck("length", Integer.TYPE, 0));
+            checks.add(new EmptinessCheck("length", Long.TYPE, 0l));
+            for (EmptinessCheck ec : checks) {
+                if (ec.invoke()) return this;
             }
+            invalid("class %s does not provide any emptiness checkers matching any of: %s",
+                    _value.getClass().getName(),
+                    checks.stream().map(c -> c.toString()).collect(Collectors.joining(", "))
+            );
         }
-        if (oops) invalid("%s must not be empty", _name);
         return this;
     }
 
