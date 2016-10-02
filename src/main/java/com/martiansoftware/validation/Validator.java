@@ -24,11 +24,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * TODO class documentation
- * TODO licenses
- * TODO readme
+ * A validator that is flexible in the type of exceptions it throws.  A new
+ * Validator should be created for each object being validated by supplying
+ * its constructor with the value to validate and a factory method for creating
+ * validation exceptions.
  * 
- * @author mlamb
+ * The Hope and Doubt classes provide static factories for creating Validators
+ * that through UncheckedValidationExceptions and CheckedValidationExceptions,
+ * respectively.
+ * 
+ * @author <a href="http://martylamb.com">Marty Lamb</a>
  * @param <T> the type of value to validate
  * @param <E> the type of exception to throw if validation fails
  */

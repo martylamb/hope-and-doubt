@@ -15,8 +15,9 @@ package com.martiansoftware.validation;
 //   limitations under the License.
 
 /**
- *
- * @author mlamb
+ * Checked version of validation exception, thrown by Doubt.
+ * 
+ * @author <a href="http://martylamb.com">Marty Lamb</a>
  */
 public class CheckedValidationException extends Exception {
   

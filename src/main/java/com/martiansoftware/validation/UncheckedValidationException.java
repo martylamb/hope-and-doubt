@@ -15,8 +15,9 @@ package com.martiansoftware.validation;
 //   limitations under the License.
 
 /**
- *
- * @author mlamb
+ * Unchecked version of validation exception, thrown by Hope.
+ * 
+ * @author <a href="http://martylamb.com">Marty Lamb</a>
  */
 public class UncheckedValidationException extends RuntimeException {
     
