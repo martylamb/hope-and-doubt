@@ -6,6 +6,15 @@ It provides both *optimistic* and *pessimistic* validators to suit your needs.  
   * *Optimistic* validators assume that the input is valid and throw unchecked exceptions if the input is invalid.  Optimistic validators are created via `Hope.that()`
   * *Pessimistic* validators assume that the input is invalid and throw checked exceptions if this turns out to be the case.  Pessimistic validators are created via `Doubt.that()`
 
+get via maven
+--------------------
+```xml
+<dependency>
+    <groupId>com.martiansoftware</groupId>
+    <artifactId>hope-and-doubt</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
 quick examples
 ----------------------
 
