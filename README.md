@@ -79,7 +79,7 @@ public void setFoo(List<Foo> fooList, Bar[] barArray) {
 ```java
 public void setName(String name) {
     String validatedName = Hope.that(name)
-                               .NotNullOrEmpty()
+                               .isNotNullOrEmpty()
                                .isFalse(n -> n.equalsIgnoreCase("anonymous"))
                                .value();
     ...
@@ -90,7 +90,7 @@ public void setName(String name) {
 ```java
 public void setAge(Integer age) {
     String validatedAge = Hope.that(name)
-                               .NotNullOrEmpty()
+                               .isNotNullOrEmpty()
                                .isFalse(n -> n < 0,
                                        "negative ages are not allowed")
                                .value();
@@ -103,7 +103,7 @@ public void setAge(Integer age) {
 public void setName(String name) {
     String validatedName = Hope.that(name)
                                .orElse("Mrs. Jane Doe")
-                               .NotNullOrEmpty()
+                               .isNotNullOrEmpty()
                                .matchesAny("^Mrs?\\. .*", // accepts "Mr. or "Mrs."
                                            "^Dr\\. .*")   // accepts "Dr."
                                .value();
