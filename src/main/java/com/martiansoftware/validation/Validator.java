@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * validation exceptions.
  * 
  * The Hope and Doubt classes provide static factories for creating Validators
- * that through UncheckedValidationExceptions and CheckedValidationExceptions,
+ * that throw UncheckedValidationExceptions and CheckedValidationExceptions,
  * respectively.
  * 
  * @author <a href="http://martylamb.com">Marty Lamb</a>
